@@ -4,28 +4,29 @@
     <meta charset="UTF-8">
     <title>Qq link page by jeasonzs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <!--<link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">-->
+    <!--<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>-->
+    <!--<link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">-->
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <script src="http://qzonestyle.gtimg.cn/open/mobile/light_app/js/device.js"></script>
+    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js"></script>
   </head>
   <body>
     <section class="page-header">
-      <h1 class="project-name">wifi智能控制器</h1>
-      <h2 id="Temp" class="project-name">23摄氏度</h2>
+      <!--<h1 class="project-name">wifi智能控制器</h1>-->
+      <h2 id="Temp" class="project-name"></h2>
       <button id="btnSwitch" type="button" class="btn" onclick="onSwitchClick() ">开启</button>
       <button id="btnUpdate" type="button" class="btn" onclick="onUpdateClick() ">刷新温度</button>
       <a href="https://github.com/jeasonzs/qq_link_page" class="btn">View on GitHub</a>
       <!--<a href="https://github.com/jeasonzs/qq_link_page/zipball/master" class="btn">Download .zip</a>-->
       <!--<a href="https://github.com/jeasonzs/qq_link_page/tarball/master" class="btn">Download .tar.gz</a>-->
     </section>
-
+    <div ></div>
 
   </body>
 
   <script>
-    device.debug = true;
+//    device.debug = true;
     function setTemp(temp) {
       strTemp = temp+"摄氏度"
       document.getElementById("Temp").innerHTML = strTemp;
@@ -67,16 +68,13 @@
       if (r!=null) return (decodeURIComponent(r[2])); return null;
     }
     function onSwitchClick() {
-      x=document.getElementById("btnSwitch")
-      name = x.innerHTML;
-      if(name == "开启") {
-        name = "关闭";
+      if($("#btnSwitch").text() == "开启") {
+          $("#btnSwitch").text("关闭");
       }
       else {
-        name = "开启";
+          $("#btnSwitch").text("开启");
 
       }
-      x.innerHTML = name;
     }
     function onUpdateClick() {
       device.send({
