@@ -1,103 +1,82 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>Qq link page by jeasonzs</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">-->
-    <!--<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>-->
-    <!--<link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">-->
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+<html>
+<head>
+    <meta charset="utf-8"/>
+
+
+    <link rel="stylesheet" href="jquery.mobile-1.4.5.min.css">
+    <script src="jquery.js"></script>
+    <script src="jquery.mobile-1.4.5.js"></script>
+
     <script src="http://qzonestyle.gtimg.cn/open/mobile/light_app/js/device.js"></script>
-    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js"></script>
-  </head>
-  <body>
-    <section class="page-header">
-      <!--<h1 class="project-name">wifi智能控制器</h1>-->
-      <h2 id="Temp" class="project-name"></h2>
-      <button id="btnSwitch" type="button" class="btn" onclick="onSwitchClick() ">开启</button>
-      <button id="btnUpdate" type="button" class="btn" onclick="onUpdateClick() ">刷新温度</button>
-      <a href="https://github.com/jeasonzs/qq_link_page" class="btn">View on GitHub</a>
-      <!--<a href="https://github.com/jeasonzs/qq_link_page/zipball/master" class="btn">Download .zip</a>-->
-      <!--<a href="https://github.com/jeasonzs/qq_link_page/tarball/master" class="btn">Download .tar.gz</a>-->
-    </section>
-    <div ></div>
+</head>
+<body>
 
-  </body>
 
-  <script>
-//    device.debug = true;
-    function setTemp(temp) {
-      strTemp = temp+"摄氏度"
-      document.getElementById("Temp").innerHTML = strTemp;
-    }
 
-    device.query({
-      list : [100002397],
-      /* list参数也支持下面这种写法，拉取多条数据
-       list : [{
-       num : 10, // 按条数拉取
-       id : 500003
-       }, {
-       begin_time: 1448337983, // 按时间段拉取
-       end_time: 1448355457, // 均为秒数时间戳
-       id : 500004
-       }
-       ],
-       */
-      interval : 1000, // 间隔毫秒，可选
-      onSuccess : function (ret) { // 查询成功回调
-        device.log('onSuccess: ' + JSON.stringify(ret));
-        ret.list.forEach(function (data) {
-          switch (data.id) {
-            case 100002397:
-              setTemp(data.val_list[0].val);
-              break;
-          }
+
+
+
+<div data-role="page" id="pageone" data-theme="a">
+    <div data-role="header">
+        <h1>wifi控制器</h1>
+    </div>
+
+    <div data-role="main" class="ui-content">
+        <select name="slider2" id="slider2" data-role="slider" align="center">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+        </select>
+
+        <button id="btnRefsh" class="ui-btn">刷新温度</button>
+        <h1 id="tempStr" class="ui-bar" align="center">100</h1>
+    </div>
+
+
+
+    <div data-role="footer">
+        <h1>powered by jeason</h1>
+    </div>
+</div>
+
+<script>
+    $(document).on("pagecreate","#pageone",function(){
+        device.debug = false;
+        device.log("start");
+
+
+        $("#btnRefsh").on("click",function(){
+            device.send({
+                datapoint : [{
+                    id : 100002399,
+                    value : 1
+                }],
+                vibrate : 1, // 1为发送时振动，可选
+                nfc : 0, // 1为近场通信方式，可选
+                lifetime : 20, // 生命期，范围1到604800秒，可选
+            });
         });
-      },
-      onError : function (ret) { // 查询失败回调
-        device.log('onError: ' + JSON.stringify(ret));
-      }
+
+
+
+        device.query({
+            list : [100002397],
+            interval : 2000, // 间隔毫秒，可选
+            onSuccess : function (ret) { // 查询成功回调
+                device.log('onSuccess: ' + JSON.stringify(ret));
+                ret.list.forEach(function (data) {
+                    switch (data.id) {
+                        case 100002397:
+                            $("#tempStr").text(data.val_list[0].val+'摄氏度');
+                            break;
+                    }
+                });
+            },
+            onError : function (ret) { // 查询失败回调
+                device.log('onError: ' + JSON.stringify(ret));
+            }
+        });
     });
-
-
-    function GetQueryString(name) {
-      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
-      var r = window.location.search.substr(1).match(reg);
-      if (r!=null) return (decodeURIComponent(r[2])); return null;
-    }
-    function onSwitchClick() {
-      if($("#btnSwitch").text() == "开启") {
-          $("#btnSwitch").text("关闭");
-      }
-      else {
-          $("#btnSwitch").text("开启");
-
-      }
-    }
-    function onUpdateClick() {
-      device.send({
-        datapoint : [{
-          id : 100002399,
-          value : 1
-        }],
-        vibrate : 0, // 1为发送时振动，可选
-        nfc : 0, // 1为近场通信方式，可选
-        lifetime : 20, // 生命期，范围1到604800秒，可选
-//        onSuccess : function (ret) { // 发送成功回调
-//          device.log('onSuccess: ' + JSON.stringify(ret));
-//        },
-//        onAck : function (ret) { // 接收响应成功回调，蓝牙设备暂不支持
-//          device.log('onAck: ' + JSON.stringify(ret));
-//        },
-//        onError : function (ret) { // 发送失败回调
-//          device.log('onError: ' + JSON.stringify(ret));
-//        }
-      });
-    }
-
-
-  </script>
-
+</script>
+</body>
 </html>
